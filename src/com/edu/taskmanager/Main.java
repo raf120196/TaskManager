@@ -14,7 +14,8 @@ import java.util.Date;
 public class Main {
     public static void main(String[] args) throws ParseException {
         TaskManagerInterface taskManager = TaskManager.getInstance();
-        //new Thread((Runnable) taskManager).start();
+        Thread thread = new Thread((Runnable) taskManager);
+        thread.start();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 //        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,7 +27,7 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        Date date = sdf.parse("11.12.2016 22:57");
+        Date date = sdf.parse("12.12.2016 22:09");
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
