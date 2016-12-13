@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static java.lang.Thread.yield;
+
 /**
  * Created by renat on 10.12.2016.
  */
@@ -94,13 +96,13 @@ public class TaskManager implements TaskManagerInterface, Runnable {
         while (true) {
             synchronized (this) {
                 for (Task task : tasks.values()) {
-                    Date d = new Date();
                     if (Math.abs(task.getTaskTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 10000) {
                         publicizeUser(task);
-                        System.exit(0);
                     }
                 }
             }
+
+            yield();
         }
     }
 }
