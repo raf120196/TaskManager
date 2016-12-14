@@ -1,4 +1,8 @@
-package com.edu.taskmanager;
+package com.mytaskmanager.entrypoint;
+
+import com.mytaskmanager.console.Monitor;
+import com.mytaskmanager.tasks.TaskManager;
+import com.mytaskmanager.tasks.TaskManagerInterface;
 
 import java.io.IOException;
 import java.text.ParseException;

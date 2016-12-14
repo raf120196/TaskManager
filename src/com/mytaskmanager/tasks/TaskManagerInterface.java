@@ -1,7 +1,6 @@
-package com.edu.taskmanager;
+package com.mytaskmanager.tasks;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by renat on 10.12.2016.
@@ -17,5 +16,11 @@ public interface TaskManagerInterface {
 
     void publicizeUser(Task task);
 
-    void run();
+    void editNameTask(int TID, String name);
+
+    void editDescriptionTask(int TID, String description);
+
+    void editDateTask(int TID, Calendar calendar);
+
+    void editContactsTask(int TID, String contacts);
 }

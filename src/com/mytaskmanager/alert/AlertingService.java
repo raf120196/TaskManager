@@ -1,4 +1,6 @@
-package com.edu.taskmanager;
+package com.mytaskmanager.alert;
+
+import com.mytaskmanager.tasks.Task;
 
 /**
  * Created by renat on 11.12.2016.

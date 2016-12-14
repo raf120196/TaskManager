@@ -1,9 +1,8 @@
-package com.edu.taskmanager;
+package com.mytaskmanager.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.yield;
 
@@ -39,10 +38,10 @@ public class Monitor implements Runnable{
 
         synchronized (this)
         {
-            while (parser.getFlag() != true) {
+            while (!parser.getFlag()) {
                 try {
                     operation = in.readLine();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
 
                 if (!"".equals(operation)) {

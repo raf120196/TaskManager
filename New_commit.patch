@@ -1,0 +1,335 @@
+Index: src/com/edu/taskmanager/AddTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/AddTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/AddTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,11 @@
++package com.edu.taskmanager;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public class AddTask implements Command {
++    @Override
++    public void execute() {
++
++    }
++}
+Index: src/com/edu/taskmanager/Command.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/Command.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/Command.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,8 @@
++package com.edu.taskmanager;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public interface Command {
++    public void execute();
++}
+Index: src/com/edu/taskmanager/DeferTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/DeferTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/DeferTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,11 @@
++package com.edu.taskmanager;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public class DeferTask implements Command {
++    @Override
++    public void execute() {
++
++    }
++}
+Index: src/com/edu/taskmanager/DeleteTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/DeleteTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/DeleteTask.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,11 @@
++package com.edu.taskmanager;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public class DeleteTask implements Command {
++    @Override
++    public void execute() {
++
++    }
++}
+Index: src/com/edu/taskmanager/Facade.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/Facade.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/Facade.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,15 @@
++package com.edu.taskmanager;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public class Facade {
++    private static Facade ourInstance = new Facade();
++
++    public static Facade getInstance() {
++        return ourInstance;
++    }
++
++    private Facade() {
++    }
++}
+Index: src/com/edu/taskmanager/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/Main.java	(revision af84e2bde1dffe62d9be66a3d69543804d7a7a90)
++++ src/com/edu/taskmanager/Main.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -1,38 +1,18 @@
+ package com.edu.taskmanager;
+ 
+-import java.io.BufferedReader;
+ import java.io.IOException;
+-import java.io.InputStreamReader;
+ import java.text.ParseException;
+-import java.text.SimpleDateFormat;
+-import java.util.Calendar;
+-import java.util.Date;
+ 
+ /**
+  * Created by renat on 11.12.2016.
+  */
+ public class Main {
+-    public static void main(String[] args) throws ParseException {
++    public static void main(String[] args) throws ParseException, IOException {
+         TaskManagerInterface taskManager = TaskManager.getInstance();
+-        Thread thread = new Thread((Runnable) taskManager);
+-        thread.start();
+-
+-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+-//        try {
+-//            Date date = sdf.parse(br.readLine());
+-//        } catch (ParseException e) {
+-//            e.printStackTrace();
+-//        } catch (IOException e) {
+-//            e.printStackTrace();
+-//        }
+-
+-        Date date = sdf.parse("12.12.2016 22:09");
+-
+-        Calendar calendar = Calendar.getInstance();
+-        calendar.setTime(date);
+-        taskManager.addTask("Ложись спать!", "Пора отдохнуть...", calendar, "renatfara@mail.ru");
+-
+-        taskManager.run();
++        Monitor monitor = Monitor.getInstance();
++        Thread threadManager = new Thread((Runnable) taskManager);
++        threadManager.start();
++        Thread threadMonitor = new Thread(monitor);
++        threadMonitor.start();
+     }
+ }
+Index: src/com/edu/taskmanager/Monitor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/Monitor.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
++++ src/com/edu/taskmanager/Monitor.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -0,0 +1,56 @@
++package com.edu.taskmanager;
++
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.InputStreamReader;
++import java.util.concurrent.atomic.AtomicBoolean;
++
++import static java.lang.Thread.yield;
++
++/**
++ * Created by renat on 13.12.2016.
++ */
++public class Monitor implements Runnable{
++    private static Monitor ourInstance = new Monitor();
++
++    public static Monitor getInstance() {
++        return ourInstance;
++    }
++
++    private Monitor() {
++    }
++
++    /**
++     * When an object implementing interface <code>Runnable</code> is used
++     * to create a thread, starting the thread causes the object's
++     * <code>run</code> method to be called in that separately executing
++     * thread.
++     * <p>
++     * The general contract of the method <code>run</code> is that it may
++     * take any action whatsoever.
++     *
++     * @see Thread#run()
++     */
++    @Override
++    public void run() {
++        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
++        Parser parser = new Parser();
++        String operation = "";
++
++        synchronized (this)
++        {
++            while (parser.getFlag() != true) {
++                try {
++                    operation = in.readLine();
++                } catch (IOException e) {
++                }
++
++                if (!"".equals(operation)) {
++                    parser.parse(operation.toLowerCase());
++                }
++
++                yield();
++            }
++        }
++    }
++}
+Index: src/com/edu/taskmanager/Parser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/Parser.java	(revision af84e2bde1dffe62d9be66a3d69543804d7a7a90)
++++ src/com/edu/taskmanager/Parser.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -3,39 +3,62 @@
+ import java.io.BufferedReader;
+ import java.io.IOException;
+ import java.io.InputStreamReader;
+-import java.util.HashMap;
+-import java.util.Map;
+-import java.util.Objects;
++import java.text.ParseException;
++import java.text.SimpleDateFormat;
++import java.util.*;
++import java.util.concurrent.atomic.AtomicBoolean;
+ 
+ /**
+  * Created by renat on 12.12.2016.
+  */
+ public class Parser {
+     private Map<String, Object> operations = new HashMap<String, Object>();
++    private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
++    private boolean finish = false;
+ 
+-    public void monitor() {
+-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
++    public synchronized boolean getFlag() {
++        return finish;
++    }
+ 
+-        String operation = "";
+-        while (true) {
+-            try
+-            {
+-                operation = in.readLine();
+-            } catch (IOException e) {
++    public void parse(String operator) {
++        if (operator.equals("help")) {
++            System.out.println("Раздел помощи:");
++            System.out.println("addtsk <task_name> <description> <dd.MM.yyyy hh:mm>\tДобавление новой задачи.");
++            System.out.println("deltsk <task_id>\tУдаление задачи с номером <task_id>.");
++            System.out.println("deftsk <task_id>\tОтложить задание с номером <task_id> на 10 минут.");
++            System.out.println("dfrtsk <task_id> <dd.MM.yyyy hh:mm\tОтложить задачу с номером <task_id> на новое время <dd.MM.yyyy hh:mm>.");
++            System.out.println("help\tВыводит данную справочную информацию.");
++            System.out.println("exit\tЗавершение работы планировщика задач.");
++            return;
+-            }
++        }
+ 
+-            if (!"".equals(operation))
+-            {
+-                parse(operation);
++        if (operator.equals("exit")) {
++            finish = true;
++            return;
+-            }
++        }
++
++        int x = operator.indexOf(' ');
++        if (x == -1) {
++            System.out.println("Введена неверная команда.");
++            return;
+         }
+-    }
+ 
+-    public void parse(String operator) {
+-        String nameOperation = operator.substring(0, operator.indexOf(' ') - 1);
+-        if (operations.containsKey(nameOperation))
+-        {
++        String[] arr = operator.split(" ");
++        String nameOperation = operator.substring(0, x - 1);
++        if (operations.containsKey(nameOperation)) {
+             operations.get(nameOperation);
+         }
++
++        Date date = null;
++        try {
++            date = sdf.parse("12.12.2016 22:09");
++        } catch (ParseException e) {
++            e.printStackTrace();
++        }
++
++        Calendar calendar = Calendar.getInstance();
++        calendar.setTime(date);
++
++        System.out.println("Yes!");
+     }
+ }
+Index: src/com/edu/taskmanager/TaskManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/com/edu/taskmanager/TaskManager.java	(revision af84e2bde1dffe62d9be66a3d69543804d7a7a90)
++++ src/com/edu/taskmanager/TaskManager.java	(revision d9b758a94c5c795a87ecb98685e88bf84c86c520)
+@@ -4,6 +4,8 @@
+ import java.io.InputStreamReader;
+ import java.util.*;
+ 
++import static java.lang.Thread.yield;
++
+ /**
+  * Created by renat on 10.12.2016.
+  */
+@@ -94,13 +96,13 @@
+         while (true) {
+             synchronized (this) {
+                 for (Task task : tasks.values()) {
+-                    Date d = new Date();
+                     if (Math.abs(task.getTaskTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 10000) {
+                         publicizeUser(task);
+-                        System.exit(0);
+                     }
+                 }
+             }
++
++            yield();
+         }
+     }
+ }

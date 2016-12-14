@@ -1,8 +1,11 @@
-package com.edu.taskmanager;
+package com.mytaskmanager.tasks;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import com.mytaskmanager.agent.Facade;
+import com.mytaskmanager.alert.*;
+import com.mytaskmanager.console.Parser;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.yield;
 
@@ -10,18 +13,14 @@ import static java.lang.Thread.yield;
  * Created by renat on 10.12.2016.
  */
 public class TaskManager implements TaskManagerInterface, Runnable {
-    private Map<Integer, Task> tasks;
+    private ConcurrentHashMap<Integer, Task> tasks;
     private int countTasks = 0;
     private int countActiveTasks = 0;
-    private ConsoleAgent consoleAgent;
-    private AlertingService alertManager;
+    private AlertInterface alertManager = AlertingService.getInstance();;
     private static final TaskManager taskManager = new TaskManager();
-    private Parser parser;
 
     private TaskManager() {
-        this.tasks = new HashMap<Integer, Task>();
-        this.consoleAgent = ConsoleAgent.getInstance();
-        this.alertManager = AlertingService.getInstance();
+        this.tasks = new ConcurrentHashMap<>();
     }
 
     public static TaskManager getInstance() {
@@ -32,6 +31,7 @@ public class TaskManager implements TaskManagerInterface, Runnable {
     public int addTask(String name, String description, Calendar taskTime, String contacts) {
         this.tasks.put(countTasks + 1, new Task(name, description, taskTime, contacts));
         countActiveTasks++;
+        System.out.println("Задача успешно добавлена!");
         return ++countTasks;
     }
 
@@ -56,10 +56,6 @@ public class TaskManager implements TaskManagerInterface, Runnable {
         }
 
         Task tmp = tasks.get(TID);
-        if (newDate.before(tmp.getTaskTime())) {
-            return false;
-        }
-
         tmp.setDate(newDate);
 
         return true;
@@ -80,6 +76,26 @@ public class TaskManager implements TaskManagerInterface, Runnable {
         alertManager.publicizeUserAboutTask(task);
     }
 
+    @Override
+    public void editNameTask(int TID, String name) {
+
+    }
+
+    @Override
+    public void editDescriptionTask(int TID, String description) {
+
+    }
+
+    @Override
+    public void editDateTask(int TID, Calendar calendar) {
+
+    }
+
+    @Override
+    public void editContactsTask(int TID, String contacts) {
+
+    }
+
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -95,9 +111,11 @@ public class TaskManager implements TaskManagerInterface, Runnable {
     public void run() {
         while (true) {
             synchronized (this) {
-                for (Task task : tasks.values()) {
+                for (Integer TID : tasks.keySet()) {
+                    Task task = tasks.get(TID);
                     if (Math.abs(task.getTaskTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 10000) {
                         publicizeUser(task);
+                        tasks.remove(TID);
                     }
                 }
             }
