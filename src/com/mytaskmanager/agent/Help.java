@@ -3,11 +3,11 @@ package com.mytaskmanager.agent;
 import java.util.ArrayList;
 
 /**
- * Created by renat on 14.12.2016.
+ * Created by renat on 15.12.2016.
  */
-public class EditTask implements Command {
+public class Help implements Command {
     @Override
     public void execute(ArrayList<String> parameters) {
-
+        facade.helpOut();
     }
 }

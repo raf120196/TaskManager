@@ -14,19 +14,19 @@ public class AddTask implements Command {
     public void execute(ArrayList<String> parameters) {
         if (parameters.size() != 5)
         {
-            System.out.println("Неверные параметры для команды addtsk. Повторите попытку.");
+            System.out.println("Неверные параметры для команды addtsk. Повторите попытку.\n");
             return;
         }
 
         String name = parameters.get(0), description = parameters.get(1), time = parameters.get(2) + " " + parameters.get(3),
                     contacts = parameters.get(4);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date date = null;
 
         try {
             date = sdf.parse(time);
         } catch (ParseException e) {
-            System.out.println("Дата введена не корректно.");
+            System.out.println("Дата введена не корректно. Повторите попытку.\n");
             return;
         }
 
@@ -35,7 +35,7 @@ public class AddTask implements Command {
         calendar.setTime(date);
 
         if (calendar.before(Calendar.getInstance())) {
-            System.out.println("Введена не актуальная дата.");
+            System.out.println("Введена не актуальная дата. Повторите попытку.\n");
             return;
         }
 

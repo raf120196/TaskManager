@@ -7,12 +7,7 @@ import java.util.*;
 /**
  * Created by renat on 12.12.2016.
  */
-public class Parser {
-    private Command commandToAdd = new AddTask();
-    private Command commandToDelete = new DeleteTask();
-    private Command commandToDefer = new DeferTask();
-    private Command commandToDfr = new DfrTask();
-    private Command commandToEdit = new EditTask();
+class Parser {
     private Map<String, Command> operations = new HashMap<String, Command>();
     private boolean finish = false;
 
@@ -20,41 +15,49 @@ public class Parser {
         return finish;
     }
 
-    public Parser() {
+    Parser() {
+        Command commandToAdd = new AddTask();
         operations.put("addtsk", commandToAdd);
+        Command commandToDelete = new DeleteTask();
         operations.put("deltsk", commandToDelete);
+        Command commandToDefer = new DeferTask();
         operations.put("deftsk", commandToDefer);
+        Command commandToDfr = new DfrTask();
         operations.put("dfrtsk", commandToDfr);
-        operations.put("edittsk", commandToEdit);
+        Command commandToEditName = new EditName();
+        operations.put("editname", commandToEditName);
+        Command commandToEditDescr = new EditDescr();
+        operations.put("editdescr", commandToEditDescr);
+        Command commandToEditCont = new EditCont();
+        operations.put("editcont", commandToEditCont);
+        Command commandToHelp = new Help();
+        operations.put("help", commandToHelp);
+        Command commandToExit = new Exit();
+        operations.put("exit", commandToExit);
+        Command commandListTasks = new ListTasks();
+        operations.put("listtasks", commandListTasks);
     }
 
     void parse(String operator) {
-        if (operator.equals("help")) {
-            System.out.println("Раздел помощи:");
-            System.out.println("addtsk <task_name> <description> <dd.MM.yyyy hh:mm> <contacts>\tДобавление новой задачи.");
-            System.out.println("deltsk <task_id>\tУдаление задачи с номером <task_id>.");
-            System.out.println("deftsk <task_id>\tОтложить задание с номером <task_id> на 10 минут.");
-            System.out.println("dfrtsk <task_id> <dd.MM.yyyy hh:mm\tОтложить задачу с номером <task_id> на новое время <dd.MM.yyyy hh:mm>.");
-            System.out.println("edittsk <task_id> <task_name> <description> <dd.MM.yyyy hh:mm>\tДобавление новой задачи.");
-            System.out.println("help\tВыводит данную справочную информацию.");
-            System.out.println("exit\tЗавершение работы планировщика задач.");
-            return;
-        }
-
-        if (operator.equals("exit")) {
-            finish = true;
-            return;
-        }
-
         int x = operator.indexOf(' ');
         if (x == -1) {
-            System.out.println("Введена неверная команда. Повторите попытку.");
+            if (operator.equals("exit")) {
+                finish = true;
+            }
+
+            if (operations.containsKey(operator)) {
+                operations.get(operator).execute(new ArrayList<String>());
+            }
+            else
+            {
+                System.out.println("Введена не существующая команда. Повторите попытку.\n");
+            }
             return;
         }
 
         String[] arr = operator.split(" ");
         if (!operations.containsKey(arr[0])) {
-            System.out.println("Введена неверная команда. Повторите попытку.");
+            System.out.println("Введена не существующая команда. Повторите попытку.\n");
             return;
         }
 

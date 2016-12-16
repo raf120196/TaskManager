@@ -11,5 +11,21 @@ import java.util.Map;
 public class DeferTask implements Command  {
     @Override
     public void execute(ArrayList<String> parameters) {
+        if (parameters.size() != 1) {
+            System.out.println("Введены неверные параметры для команды deftsk.\n");
+            return;
+        }
+
+        int TID;
+        try {
+            TID = Integer.parseInt(parameters.get(0));
+        }
+        catch (NumberFormatException e)
+        {
+            System.out.println("Введены неверные параметры для команды deftsk.\n");
+            return;
+        }
+
+        facade.deferTask(TID);
     }
 }

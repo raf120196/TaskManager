@@ -1,8 +1,8 @@
 package com.mytaskmanager.tasks;
 
-import com.mytaskmanager.agent.Facade;
 import com.mytaskmanager.alert.*;
-import com.mytaskmanager.console.Parser;
+import com.mytaskmanager.log.LogWriter;
+import com.mytaskmanager.log.XMLWriter;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,13 +14,16 @@ import static java.lang.Thread.yield;
  */
 public class TaskManager implements TaskManagerInterface, Runnable {
     private ConcurrentHashMap<Integer, Task> tasks;
+    private ConcurrentHashMap<Integer, Boolean> flagIsPublicize;
     private int countTasks = 0;
-    private int countActiveTasks = 0;
-    private AlertInterface alertManager = AlertingService.getInstance();;
+    private AlertInterface alertManager = AlertingService.getInstance();
+    private LogWriter logWriter = (LogWriter) XMLWriter.getInstance();
+    private boolean finish = false;
     private static final TaskManager taskManager = new TaskManager();
 
     private TaskManager() {
         this.tasks = new ConcurrentHashMap<>();
+        this.flagIsPublicize = new ConcurrentHashMap<>();
     }
 
     public static TaskManager getInstance() {
@@ -28,72 +31,147 @@ public class TaskManager implements TaskManagerInterface, Runnable {
     }
 
     @Override
-    public int addTask(String name, String description, Calendar taskTime, String contacts) {
-        this.tasks.put(countTasks + 1, new Task(name, description, taskTime, contacts));
-        countActiveTasks++;
-        System.out.println("Задача успешно добавлена!");
-        return ++countTasks;
+    public void addTask(String name, String description, Calendar taskTime, String contacts) {
+        this.tasks.put(++countTasks, new Task(name, description, taskTime, contacts));
+        this.flagIsPublicize.put(countTasks, false);
+        System.out.println("Задача успешно добавлена. Ей присвоен идентификатор " + countTasks + ".\n");
+        logWriter.addElement(countTasks, tasks.get(countTasks));
     }
 
     @Override
-    public boolean deferTask(int TID) {
+    public void deferTask(int TID) {
         if (!tasks.containsKey(TID)) {
-            return false;
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
         }
 
         Task tmp = tasks.get(TID);
         Calendar c = tmp.getTaskTime();
         c.add(Calendar.MINUTE, 10);
+        System.out.println("Задача №" + TID + " отложена на 10 минут.\n");
         tmp.setDate(c);
 
-        return true;
+        logWriter.addElement(TID, tasks.get(TID));
+        flagIsPublicize.replace(TID, false);
     }
 
     @Override
-    public boolean deferTask(int TID, Calendar newDate) {
+    public void deferTask(int TID, Calendar newDate) {
         if (!tasks.containsKey(TID)) {
-            return false;
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
         }
 
         Task tmp = tasks.get(TID);
         tmp.setDate(newDate);
+        System.out.println("Задача №" + TID + " перенесена на " + dateOut(newDate) + ".\n");
 
-        return true;
+        logWriter.addElement(TID, tasks.get(TID));
+        flagIsPublicize.replace(TID, false);
     }
 
     @Override
-    public boolean deleteTask(int TID) {
+    public void deleteTask(int TID) {
         if (!tasks.containsKey(TID)) {
-            return false;
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
         }
 
         tasks.remove(TID);
-        return true;
+        flagIsPublicize.remove(TID);
+        System.out.println("Задача с идентификатором " + TID + " успешно удалена.\n");
+        return;
     }
 
     @Override
-    public void publicizeUser(Task task) {
-        alertManager.publicizeUserAboutTask(task);
+    public void publicizeUser(int TID, Task task) {
+        if (!flagIsPublicize.get(TID)) {
+            alertManager.publicizeUserAboutTask(TID, task);
+        }
     }
 
     @Override
-    public void editNameTask(int TID, String name) {
-
+    public void finishManager() {
+        finish = true;
     }
 
     @Override
-    public void editDescriptionTask(int TID, String description) {
-
+    public void helpOut() {
+        System.out.println("Раздел помощи:");
+        System.out.println("addtsk <task_name> <description> <dd.MM.yyyy hh:mm> <contacts>\tДобавление новой задачи.");
+        System.out.println("deltsk <task_id>\tУдаление задачи с номером <task_id>.");
+        System.out.println("deftsk <task_id>\tОтложить задание с номером <task_id> на 10 минут.");
+        System.out.println("dfrtsk <task_id> <dd.MM.yyyy hh:mm\tОтложить задачу с номером <task_id> на новое время <dd.MM.yyyy hh:mm>.");
+        System.out.println("editname <task_id> <new_name>\tИзменение названия у задачи <task_id>.");
+        System.out.println("editdescr <task_id> <new_description>\tИзменение описания у задачи <task_id>.");
+        System.out.println("editcont <task_id> <new_contacts>\tИзменение контактов у задачи <task_id>.");
+        System.out.println("listtasks\tВыводит список активных задач.");
+        System.out.println("help\tВыводит данную справочную информацию.");
+        System.out.println("exit\tЗавершение работы планировщика задач.");
+        System.out.println();
     }
 
     @Override
-    public void editDateTask(int TID, Calendar calendar) {
+    public void editNameTask(int TID, String newName) {
+        if (!tasks.containsKey(TID)) {
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
+        }
 
+        Task task = tasks.get(TID);
+        task.setName(newName);
+        System.out.println("Задаче №" + TID + " изменено название.\n");
+
+        logWriter.addElement(TID, tasks.get(TID));
     }
 
     @Override
-    public void editContactsTask(int TID, String contacts) {
+    public void editDescriptionTask(int TID, String newDescription) {
+        if (!tasks.containsKey(TID)) {
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
+        }
 
+        Task task = tasks.get(TID);
+        task.setDescription(newDescription);
+        System.out.println("У задачи №" + TID + " изменено описание.\n");
+
+        logWriter.addElement(TID, tasks.get(TID));
+    }
+
+    @Override
+    public void editContactsTask(int TID, String newContacts) {
+        if (!tasks.containsKey(TID)) {
+            System.out.println("Задачи с таким идентификатором не обнаружено. Повторите попытку.\n");
+            return;
+        }
+
+        Task task = tasks.get(TID);
+        task.setContacts(newContacts);
+        System.out.println("У задачи №" + TID + " изменены контакты.\n");
+
+        logWriter.addElement(TID, tasks.get(TID));
+    }
+
+    @Override
+    public void listTasks() {
+        System.out.println("Список активных задач:");
+        for (Integer TID : tasks.keySet()) {
+            Task task = tasks.get(TID);
+            System.out.println(TID + "\t" + task.getName() + "\t" + task.getDescription() + "\t" + dateOut(task.getTaskTime()) + "\t" + task.getContacts());
+        }
+        System.out.println();
+    }
+
+    private String dateOut(Calendar c) {
+        return (c.get(c.DAY_OF_MONTH) + "." + (c.get(c.MONTH) + 1) + "." + c.get(c.YEAR) + " " + c.get(c.HOUR_OF_DAY) + ":" + c.get(c.MINUTE));
+    }
+
+    @Override
+    public void doneTask(int TID) {
+        tasks.remove(TID);
+        flagIsPublicize.remove(TID);
+        System.out.println("Задача №" + TID + " успешно выполнена.\n");
     }
 
     /**
@@ -109,18 +187,26 @@ public class TaskManager implements TaskManagerInterface, Runnable {
      */
     @Override
     public void run() {
-        while (true) {
+        Calendar c = Calendar.getInstance();
+        System.out.println("Планировщик задач запущен в " + dateOut(c) + ".\n");
+
+        while (!finish) {
             synchronized (this) {
                 for (Integer TID : tasks.keySet()) {
                     Task task = tasks.get(TID);
                     if (Math.abs(task.getTaskTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 10000) {
-                        publicizeUser(task);
-                        tasks.remove(TID);
+                        publicizeUser(TID, task);
+                        flagIsPublicize.replace(TID, true);
                     }
                 }
             }
 
             yield();
         }
+
+        c = Calendar.getInstance();
+        logWriter.write();
+        System.out.println("Планировщик задач завершил работу в " + dateOut(c) + ".");
+        System.exit(0);
     }
 }
