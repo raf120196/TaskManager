@@ -7,5 +7,6 @@ import com.mytaskmanager.tasks.Task;
  */
 public interface LogWriter {
     void addElement(int TID, Task task);
+
     void write();
 }

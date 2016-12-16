@@ -13,7 +13,7 @@ public class Task {
     private Calendar taskTime;
     private String contacts;
 
-    public Task(String name, String description, Calendar taskTime, String contacts) {
+    Task(String name, String description, Calendar taskTime, String contacts) {
         this.name = name;
         this.description = description;
         this.taskTime = taskTime;
@@ -24,7 +24,7 @@ public class Task {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -32,7 +32,7 @@ public class Task {
         return description;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 
@@ -40,7 +40,7 @@ public class Task {
         return taskTime;
     }
 
-    public void setDate(Calendar newDate) {
+    void setDate(Calendar newDate) {
         this.taskTime = newDate;
     }
 
@@ -48,7 +48,7 @@ public class Task {
         return contacts;
     }
 
-    public void setContacts(String contacts) {
+    void setContacts(String contacts) {
         this.contacts = contacts;
     }
 }

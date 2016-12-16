@@ -39,7 +39,7 @@ class Parser {
     }
 
     void parse(String operator) {
-        int x = operator.indexOf(' ');
+        int x = operator.indexOf(" : ");
         if (x == -1) {
             if (operator.equals("exit")) {
                 finish = true;
@@ -47,25 +47,20 @@ class Parser {
 
             if (operations.containsKey(operator)) {
                 operations.get(operator).execute(new ArrayList<String>());
-            }
-            else
-            {
+            } else {
                 System.out.println("Введена не существующая команда. Повторите попытку.\n");
             }
             return;
         }
 
-        String[] arr = operator.split(" ");
+        String[] arr = operator.split(" : ");
         if (!operations.containsKey(arr[0])) {
             System.out.println("Введена не существующая команда. Повторите попытку.\n");
             return;
         }
 
         List<String> parametres = new ArrayList<>();
-        for (int i = 1; i < arr.length; i++)
-        {
-            parametres.add(arr[i]);
-        }
+        parametres.addAll(Arrays.asList(arr).subList(1, arr.length));
         operations.get(arr[0]).execute((ArrayList<String>) parametres);
     }
 }

@@ -69,7 +69,11 @@ class SwingAlert extends JFrame {
 
     private class OKActionListener implements ActionListener {
         int TID;
-        OKActionListener(int TID) {this.TID = TID;}
+
+        OKActionListener(int TID) {
+            this.TID = TID;
+        }
+
         public void actionPerformed(ActionEvent e) {
             Command ok = new DoneTask();
             ArrayList<String> list = new ArrayList<String>();
@@ -82,6 +86,7 @@ class SwingAlert extends JFrame {
     private class DeferActionListener implements ActionListener {
         int TID;
         Command commandToDefer;
+
         DeferActionListener(int TID) {
             this.commandToDefer = new DeferTask();
             this.TID = TID;
@@ -97,9 +102,11 @@ class SwingAlert extends JFrame {
 
     private class ExitActionListener implements ActionListener {
         Command commandToExit;
+
         ExitActionListener() {
             this.commandToExit = new Exit();
         }
+
         public void actionPerformed(ActionEvent e) {
             commandToExit.execute(new ArrayList<String>());
             setVisible(false);

@@ -8,8 +8,7 @@ import java.util.ArrayList;
 public class DeleteTask implements Command {
     @Override
     public void execute(ArrayList<String> parameters) {
-        if (parameters.size() != 1)
-        {
+        if (parameters.size() != 1) {
             System.out.println("Неверные параметры для команды deltsk. Повторите попытку.\n");
             return;
         }
@@ -17,9 +16,7 @@ public class DeleteTask implements Command {
         int TID;
         try {
             TID = Integer.parseInt(parameters.get(0));
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             System.out.println("Введены неверные параметры для команды dfrtsk.\n");
             return;
         }

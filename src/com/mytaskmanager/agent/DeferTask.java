@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by renat on 13.12.2016.
  */
-public class DeferTask implements Command  {
+public class DeferTask implements Command {
     @Override
     public void execute(ArrayList<String> parameters) {
         if (parameters.size() != 1) {
@@ -19,9 +19,7 @@ public class DeferTask implements Command  {
         int TID;
         try {
             TID = Integer.parseInt(parameters.get(0));
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             System.out.println("Введены неверные параметры для команды deftsk.\n");
             return;
         }

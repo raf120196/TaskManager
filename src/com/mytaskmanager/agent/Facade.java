@@ -46,8 +46,7 @@ class Facade {
         singletonTaskManager.editContactsTask(TID, newContacts);
     }
 
-    void helpOut()
-    {
+    void helpOut() {
         singletonTaskManager.helpOut();
     }
 
@@ -59,5 +58,7 @@ class Facade {
         singletonTaskManager.finishManager();
     }
 
-    void doneTask(int TID) { singletonTaskManager.doneTask(TID); }
+    void doneTask(int TID) {
+        singletonTaskManager.doneTask(TID);
+    }
 }

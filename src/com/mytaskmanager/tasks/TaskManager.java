@@ -80,12 +80,11 @@ public class TaskManager implements TaskManagerInterface, Runnable {
         tasks.remove(TID);
         flagIsPublicize.remove(TID);
         System.out.println("Задача с идентификатором " + TID + " успешно удалена.\n");
-        return;
     }
 
     @Override
     public void publicizeUser(int TID, Task task) {
-        if (!flagIsPublicize.get(TID)) {
+        if (tasks.containsKey(TID) && !flagIsPublicize.get(TID)) {
             alertManager.publicizeUserAboutTask(TID, task);
         }
     }
@@ -98,16 +97,16 @@ public class TaskManager implements TaskManagerInterface, Runnable {
     @Override
     public void helpOut() {
         System.out.println("Раздел помощи:");
-        System.out.println("addtsk <task_name> <description> <dd.MM.yyyy hh:mm> <contacts>\tДобавление новой задачи.");
-        System.out.println("deltsk <task_id>\tУдаление задачи с номером <task_id>.");
-        System.out.println("deftsk <task_id>\tОтложить задание с номером <task_id> на 10 минут.");
-        System.out.println("dfrtsk <task_id> <dd.MM.yyyy hh:mm\tОтложить задачу с номером <task_id> на новое время <dd.MM.yyyy hh:mm>.");
-        System.out.println("editname <task_id> <new_name>\tИзменение названия у задачи <task_id>.");
-        System.out.println("editdescr <task_id> <new_description>\tИзменение описания у задачи <task_id>.");
-        System.out.println("editcont <task_id> <new_contacts>\tИзменение контактов у задачи <task_id>.");
-        System.out.println("listtasks\tВыводит список активных задач.");
-        System.out.println("help\tВыводит данную справочную информацию.");
-        System.out.println("exit\tЗавершение работы планировщика задач.");
+        System.out.println("addtsk <task_name> <description> <dd.MM.yyyy HH:mm> <contacts>\tДобавление новой задачи.");
+        System.out.println("deltsk <task_id>                                              \tУдаление задачи с номером <task_id>.");
+        System.out.println("deftsk <task_id>                                              \tОтложить задание с номером <task_id> на 10 минут.");
+        System.out.println("dfrtsk <task_id> <dd.MM.yyyy HH:mm>                           \tОтложить задачу с номером <task_id> на новое время <dd.MM.yyyy hh:mm>.");
+        System.out.println("editname <task_id> <new_name>                                 \tИзменение названия у задачи <task_id>.");
+        System.out.println("editdescr <task_id> <new_description>                         \tИзменение описания у задачи <task_id>.");
+        System.out.println("editcont <task_id> <new_contacts>                             \tИзменение контактов у задачи <task_id>.");
+        System.out.println("listtasks                                                     \tВыводит список активных задач.");
+        System.out.println("help                                                          \tВыводит данную справочную информацию.");
+        System.out.println("exit                                                          \tЗавершение работы планировщика задач.");
         System.out.println();
     }
 
@@ -164,7 +163,7 @@ public class TaskManager implements TaskManagerInterface, Runnable {
     }
 
     private String dateOut(Calendar c) {
-        return (c.get(c.DAY_OF_MONTH) + "." + (c.get(c.MONTH) + 1) + "." + c.get(c.YEAR) + " " + c.get(c.HOUR_OF_DAY) + ":" + c.get(c.MINUTE));
+        return (c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
     }
 
     @Override

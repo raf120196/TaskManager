@@ -9,7 +9,7 @@ import static java.lang.Thread.yield;
 /**
  * Created by renat on 13.12.2016.
  */
-public class Monitor implements Runnable{
+public class Monitor implements Runnable {
     private static Monitor ourInstance = new Monitor();
 
     public static Monitor getInstance() {
@@ -36,8 +36,7 @@ public class Monitor implements Runnable{
         Parser parser = new Parser();
         String operation = "";
 
-        synchronized (this)
-        {
+        synchronized (this) {
             while (!parser.getFlag()) {
                 try {
                     operation = in.readLine();
@@ -45,7 +44,7 @@ public class Monitor implements Runnable{
                 }
 
                 if (!"".equals(operation)) {
-                    parser.parse(operation.toLowerCase());
+                    parser.parse(operation);
                 }
 
                 yield();

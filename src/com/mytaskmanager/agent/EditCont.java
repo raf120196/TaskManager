@@ -16,9 +16,7 @@ public class EditCont implements Command {
         int TID;
         try {
             TID = Integer.parseInt(parameters.get(0));
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             System.out.println("Введены неверные параметры для команды editcont.\n");
             return;
         }

@@ -12,14 +12,12 @@ import java.util.Date;
 public class AddTask implements Command {
     @Override
     public void execute(ArrayList<String> parameters) {
-        if (parameters.size() != 5)
-        {
+        if (parameters.size() != 4) {
             System.out.println("Неверные параметры для команды addtsk. Повторите попытку.\n");
             return;
         }
 
-        String name = parameters.get(0), description = parameters.get(1), time = parameters.get(2) + " " + parameters.get(3),
-                    contacts = parameters.get(4);
+        String name = parameters.get(0), description = parameters.get(1), time = parameters.get(2), contacts = parameters.get(3);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date date = null;
 

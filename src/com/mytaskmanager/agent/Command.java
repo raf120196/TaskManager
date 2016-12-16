@@ -7,5 +7,6 @@ import java.util.ArrayList;
  */
 public interface Command {
     Facade facade = Facade.getInstance();
+
     void execute(ArrayList<String> parameters);
 }

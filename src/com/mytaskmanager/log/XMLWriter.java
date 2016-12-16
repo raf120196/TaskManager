@@ -15,7 +15,7 @@ import java.util.Calendar;
 public class XMLWriter implements LogWriter {
     private static XMLWriter ourInstance = new XMLWriter();
     private Element rootElement;
-    Document doc;
+    private Document doc;
 
     public static XMLWriter getInstance() {
         return ourInstance;
@@ -27,7 +27,7 @@ public class XMLWriter implements LogWriter {
     }
 
     private String dateOut(Calendar c) {
-        return (c.get(c.DAY_OF_MONTH) + "." + (c.get(c.MONTH) + 1) + "." + c.get(c.YEAR) + " " + c.get(c.HOUR_OF_DAY) + ":" + c.get(c.MINUTE));
+        return (c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
     }
 
     @Override
@@ -49,8 +49,7 @@ public class XMLWriter implements LogWriter {
             FileWriter fw = new FileWriter("tasks.xml");
             outputter.output(doc, fw);
             fw.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }

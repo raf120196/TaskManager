@@ -12,7 +12,7 @@ import java.util.Date;
 public class DfrTask implements Command {
     @Override
     public void execute(ArrayList<String> parameters) {
-        if (parameters.size() != 3) {
+        if (parameters.size() != 2) {
             System.out.println("Введены неверные параметры для команды dfrtsk.\n");
             return;
         }
@@ -20,9 +20,7 @@ public class DfrTask implements Command {
         int TID;
         try {
             TID = Integer.parseInt(parameters.get(0));
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             System.out.println("Введены неверные параметры для команды dfrtsk.\n");
             return;
         }
@@ -31,7 +29,7 @@ public class DfrTask implements Command {
         Date date = null;
 
         try {
-            date = sdf.parse(parameters.get(1) + " " + parameters.get(2));
+            date = sdf.parse(parameters.get(1));
         } catch (ParseException e) {
             System.out.println("Дата введена не корректно. Повторите попытку.\n");
             return;

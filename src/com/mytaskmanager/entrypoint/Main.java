@@ -12,6 +12,7 @@ import java.text.ParseException;
  */
 public class Main {
     public static void main(String[] args) throws ParseException, IOException {
+        System.setProperty("console.encoding","Cp866");
         TaskManagerInterface taskManager = TaskManager.getInstance();
         Monitor monitor = Monitor.getInstance();
         Thread threadManager = new Thread((Runnable) taskManager);

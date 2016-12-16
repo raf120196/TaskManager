@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Tasks>
-  <task task_id="1" name="университет" description="собирайся_на_английский" datetime="16.12.2016 12:45" contacts="ренат" />
+  <task task_id="1" name="проверить работу" description="скажи араму" datetime="16.12.2016 20:50" contacts="renatfara@mail.ru" />
+  <task task_id="2" name="нарисовать диаграмму" description="выучить зос" datetime="16.12.2016 20:55" contacts="renatfara@mail.ru" />
+  <task task_id="3" name="помыться" description="почисть перышки" datetime="16.12.2016 20:57" contacts="renatfara@mail.ru" />
 </Tasks>

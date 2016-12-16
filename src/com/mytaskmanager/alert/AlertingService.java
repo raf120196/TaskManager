@@ -24,8 +24,6 @@ public class AlertingService implements AlertInterface {
     }
 
     public void publicizeUserAboutTask(int TID, Task task) {
-        System.out.println("Внимание! Настало время задачи " + task.getName() + ": " + task.getDescription() + ". Контакты: " + task.getContacts() + ".\n");
-
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame.setDefaultLookAndFeelDecorated(true);
@@ -48,11 +46,7 @@ public class AlertingService implements AlertInterface {
             Thread.sleep(clip.getMicrosecondLength() / 1000);
             clip.stop();
             clip.close();
-        }
-        catch (IOException | UnsupportedAudioFileException | LineUnavailableException exc) {
-            exc.printStackTrace();
-        }
-        catch (InterruptedException exc) {
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException ignored) {
         }
     }
 }
